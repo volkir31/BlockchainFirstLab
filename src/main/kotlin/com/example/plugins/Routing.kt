@@ -32,8 +32,12 @@ fun Application.configureRouting() {
                 }
             }
         }
+
         post("/info") {
             val address = call.receiveParameters().getOrFail("address")
+            if ("" == address) {
+                call.respondRedirect("/")
+            }
             call.sessions.set(UserSession(id = UUID.randomUUID().toString(), walletAddress = address))
             val client = HttpClient(CIO)
             val response: HttpResponse = client.get("https://api.blockcypher.com/v1/btc/test3/addrs/$address")
